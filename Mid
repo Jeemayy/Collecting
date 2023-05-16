@@ -32,7 +32,46 @@ Additive_RNG(199, 12359, 2379, 1389, 1000)
 multiplicative_RNG(199, 12359, 1389, 1000)
 
 ###SOAL 2
+generate_gamma <- function(n, alpha, beta) {
+  data_gamma <- numeric(n)  # Membuat vektor kosong untuk menyimpan data
+  
+  for (i in 1:n) {
+    # Membangkitkan data diskrit
+    u <- runif(1)  # Menghasilkan bilangan acak dari distribusi seragam (0,1)
+    x <- -log(u) / beta  # Menggunakan rumus invers dari distribusi eksponensial
+    
+    # Menghitung nilai data diskrit berdasarkan alpha
+    k <- 0
+    p <- exp(-beta)
+    f <- p
+    
+    while (u > f) {
+      k <- k + 1
+      p <- (beta * p) / k
+      f <- f + p
+    }
+    
+    data_gamma[i] <- x + alpha - 1  # Menyimpan data diskrit dalam vektor
+  }
+  
+  return(data_gamma)
+}
 
+# Mengatur parameter distribusi gamma
+alpha <- 4
+beta <- 5
+
+# Jumlah data yang akan dibangkitkan
+n <- 1000
+
+# Memanggil fungsi generate_gamma untuk menghasilkan data diskrit gamma
+data_gamma <- generate_gamma(n, alpha, beta)
+
+# Membuat data frame dari hasil data diskrit
+df <- data.frame(Data = data_gamma)
+
+# Menampilkan data frame
+View(df)
 
 
 ###SOAL 3
