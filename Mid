@@ -1,4 +1,5 @@
-###SOAL 1
+###UTS TEKSIM###
+###SOAL 1###
 Additive_RNG <- function(a, z0, c, m, n) {
   xi <- matrix(NA, n, 3)
   colnames(xi) <- c("aZ(i-1)+c", "Xi", "Ui")
@@ -8,7 +9,6 @@ Additive_RNG <- function(a, z0, c, m, n) {
     xi[i, 3] <- xi[i, 2] / m  # Menghasilkan nilai uniform pada kolom ketiga (Ui)
     z0 <- xi[i, 2]  # z0 akan digantikan dengan nilai Zi mod m untuk iterasi berikutnya
   }
-  hist(xi[, 3], main = "Additive RNG")  # Menampilkan histogram nilai uniform
   View(xi)  # Menampilkan data xi dalam tampilan data frame
 }
 
@@ -21,7 +21,6 @@ multiplicative_RNG <- function(a, z0, m, n) {
     xj[j, 3] <- xj[j, 2] / m
     z0 <- xj[j, 2]
   }
-  hist(xj[, 3], main = "Multiplicative RNG")  # Menampilkan histogram nilai uniform
   View(xj)  # Menampilkan data xj dalam tampilan data frame
 }
 
@@ -31,7 +30,7 @@ Additive_RNG(199, 12359, 2379, 1389, 1000)
 # Menjalankan fungsi multiplicative_RNG
 multiplicative_RNG(199, 12359, 1389, 1000)
 
-###SOAL 2
+###SOAL 2###
 generate_gamma <- function(n, alpha, beta) {
   data_gamma <- numeric(n)  # Membuat vektor kosong untuk menyimpan data
   
@@ -40,7 +39,7 @@ generate_gamma <- function(n, alpha, beta) {
     u <- runif(1)  # Menghasilkan bilangan acak dari distribusi seragam (0,1)
     x <- -log(u) / beta  # Menggunakan rumus invers dari distribusi eksponensial
     
-    # Menghitung nilai data diskrit berdasarkan alpha
+    # Menghitung probabilitas kumulatif
     k <- 0
     p <- exp(-beta)
     f <- p
@@ -74,11 +73,28 @@ df <- data.frame(Data = data_gamma)
 View(df)
 
 
-###SOAL 3
+###SOAL 3###
+n <- 1000  # Jumlah data yang akan dibangkitkan
+
+sebaran_geom <- function(p) {
+  R <- runif(n)  # Menghasilkan bilangan acak dari distribusi seragam (0,1)
+  X <- log(1 - R) / log(1 - p)  # Menggunakan rumus inverse transformation
+  
+  print(X)
+}
+
+# Memanggil fungsi sebaran_geom dengan parameter p nilai sembarang antara 0-1
+data_geometri <- sebaran_geom(0.8)
+
+# Membuat data frame dari hasil data geometri
+geometri <- data.frame(Data = data_geometri)
+
+# Menampilkan data frame
+View(geometri)
 
 
 
-###SOAL 4
+###SOAL 4###
 # Fungsi untuk menjalankan algoritma MCMC Metropolis-Hastings
 run_mcmc_metropolis_hastings <- function(Y, X1, X2, initial_sample, num_iterations, proposal_sd) {
   accepted_samples <- matrix(NA, nrow = num_iterations, ncol = length(initial_sample))  # Membuat matriks kosong untuk menyimpan sampel yang diterima
