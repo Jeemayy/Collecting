@@ -30,3 +30,55 @@ Additive_RNG(199, 12359, 2379, 1389, 1000)
 
 # Menjalankan fungsi multiplicative_RNG
 multiplicative_RNG(199, 12359, 1389, 1000)
+
+###SOAL 2
+
+
+
+###SOAL 3
+
+
+
+###SOAL 4
+# Fungsi untuk menjalankan algoritma MCMC Metropolis-Hastings
+run_mcmc_metropolis_hastings <- function(Y, X1, X2, initial_sample, num_iterations, proposal_sd) {
+  accepted_samples <- matrix(NA, nrow = num_iterations, ncol = length(initial_sample))  # Membuat matriks kosong untuk menyimpan sampel yang diterima
+  colnames(accepted_samples) <- c("Intercept", "X1", "X2")  # Menyimpan nama kolom matriks
+  accepted_samples[1, ] <- initial_sample  # Menyimpan parameter awal pada baris pertama matriks
+  current_log_likelihood <- sum(dnorm(Y - (initial_sample[1] + initial_sample[2]*X1 + initial_sample[3]*X2), sd = 1, log = TRUE))  # Menghitung likelihood awal
+  
+  for (i in 2:num_iterations) {
+    proposed_sample <- rnorm(length(initial_sample), mean = accepted_samples[i-1, ], sd = proposal_sd)  # Menghasilkan sampel proposisi
+    proposed_log_likelihood <- sum(dnorm(Y - (proposed_sample[1] + proposed_sample[2]*X1 + proposed_sample[3]*X2), sd = 1, log = TRUE))  # Menghitung likelihood sampel proposisi
+    
+    acceptance_ratio <- min(1, exp(proposed_log_likelihood - current_log_likelihood))  # Menghitung rasio penerimaan
+    
+    if (runif(1) < acceptance_ratio) {
+      accepted_samples[i, ] <- proposed_sample  # Menerima sampel proposisi
+      current_log_likelihood <- proposed_log_likelihood
+    } else {
+      accepted_samples[i, ] <- accepted_samples[i-1, ]  # Menolak sampel proposisi dan menggunakan sampel sebelumnya
+    }
+  }
+  
+  data.frame(accepted_samples)  # Mengembalikan hasil sampel yang diterima dalam bentuk data frame
+}
+
+# Data simulasi regresi linear
+n <- 100  # Jumlah observasi
+X1 <- runif(n, 0, 10)  # Variabel prediktor X1
+X2 <- runif(n, 0, 10)  # Variabel prediktor X2
+epsilon <- rnorm(n, 0, 1)  # Komponen error epsilon
+Y <- 5.32 + 0.12*X1 + 0.05*X2 + epsilon  # Variabel respons Y
+
+# Parameter awal dan konfigurasi MCMC
+initial_sample <- c(5, 0.1, 0.05)  # Nilai awal parameter beta
+num_iterations <- 10000  # Jumlah iterasi MCMC
+proposal_sd <- c(0.1, 0.1, 0.1)  # Standar deviasi distribusi proposal
+
+# Menjalankan MCMC Metropolis-Hastings
+samples <- run_mcmc_metropolis_hastings(Y, X1, X2, initial_sample, num_iterations, proposal_sd)  # Memanggil fungsi run_mcmc_metropolis_hastings
+
+# Melihat hasil sampel yang diterima
+View(samples)  # Menampilkan hasil sampel dalam tampilan data frame
+
